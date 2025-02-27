@@ -1,13 +1,11 @@
 <nz-card style="width:300px;" nzTitle="Login">
-  <!--
-  [formGroup]="validateForm"
-  -->
-  <form nz-form class="login-form" (ngSubmit)="login()">
-    <!--
+  <form nz-form class="login-form"
+        [formGroup]="loginForm"
+        (ngSubmit)="login()">
     <nz-form-item>
       <nz-form-control nzErrorTip="Please input your username!">
         <nz-input-group nzPrefixIcon="user">
-          <input type="text" nz-input formControlName="username" placeholder="Username" />
+          <input type="text" nz-input formControlName="mail" placeholder="Mail" />
         </nz-input-group>
       </nz-form-control>
     </nz-form-item>
@@ -18,7 +16,6 @@
         </nz-input-group>
       </nz-form-control>
     </nz-form-item>
-    -->
     <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">Log in</button>
   </form>
 </nz-card>
