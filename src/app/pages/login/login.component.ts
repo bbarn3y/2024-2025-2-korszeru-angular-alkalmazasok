@@ -1,20 +1,14 @@
-import { Component } from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {NzButtonModule} from 'ng-zorro-antd/button';
 import {NzCardModule} from 'ng-zorro-antd/card';
 import {NzFormModule} from 'ng-zorro-antd/form';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {NzIconModule} from 'ng-zorro-antd/icon';
 import {NzInputModule} from 'ng-zorro-antd/input';
 import {RouterService} from '@services/router.service';
 import {IconService} from '@ant-design/icons-angular';
 import {LockOutline, UserOutline} from '@ant-design/icons-angular/icons';
+import {ClientService} from '@services/client.service';
 
 @Component({
   selector: 'app-login',
@@ -29,12 +23,13 @@ import {LockOutline, UserOutline} from '@ant-design/icons-angular/icons';
   ],
   standalone: true,
   templateUrl: './login.component.html',
-  styleUrl: './login.component.less'
+  styleUrl: './login.component.less',
 })
 export class LoginComponent {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder,
+  constructor(private clientService: ClientService,
+              private fb: FormBuilder,
               private iconService: IconService,
               private routerService: RouterService) {
     this.iconService.addIcon(LockOutline, UserOutline);
@@ -48,12 +43,15 @@ export class LoginComponent {
 
   login() {
     if (this.loginForm.valid) {
-      this.routerService.routeToLobby();
+      this.clientService.login().subscribe((response) => {
+        console.log(response);
+        this.routerService.routeToLobby();
+      });
     } else {
       Object.values(this.loginForm.controls).forEach((control: AbstractControl) => {
         control.markAsDirty();
         control.updateValueAndValidity();
-      })
+      });
     }
   }
 

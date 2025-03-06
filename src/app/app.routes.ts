@@ -3,6 +3,7 @@ import {LoginComponent} from './pages/login/login.component';
 import {NotFoundComponent} from './pages/not-found/not-found.component';
 import {LobbyComponent} from './pages/lobby/lobby.component';
 import {PageRoutes} from './_constants/pageRoutes';
+import {privateGuard} from './_guards/private.guard';
 
 export const routes: Routes = [
   {
@@ -19,6 +20,7 @@ export const routes: Routes = [
     title: 'Lobby',
     path: PageRoutes.lobby,
     component: LobbyComponent,
+    canActivate: [privateGuard]
   },
   {
     path: '**',

@@ -1,4 +1,11 @@
-<nz-card style="width:300px;" nzTitle="Login">
+<ng-template #loginTitle>
+  <h3 style="margin-bottom: 0">
+    <i nz-icon nzType="user"></i>
+    Login
+  </h3>
+</ng-template>
+
+<nz-card style="width:300px;" [nzTitle]="loginTitle">
   <form nz-form class="login-form"
         [formGroup]="loginForm"
         (ngSubmit)="login()">
