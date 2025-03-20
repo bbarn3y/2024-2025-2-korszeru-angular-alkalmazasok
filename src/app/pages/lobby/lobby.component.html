@@ -1,21 +1,6 @@
+<app-character-listing></app-character-listing>
 
-<!--
-*ngFor="let character of characters"
-<ng-container>
--->
-
-<input #filterInput nz-input placeholder="Filter characters...">
-
-@for (character of characters; track character.id) {
-  <!-- character.image ? coverTemplate : undefined -->
-  <nz-card style="width:300px;"
-           [nzCover]="coverTemplate">
-    <nz-card-meta [nzTitle]="character.name"></nz-card-meta>
-  </nz-card>
-
-  <ng-template #coverTemplate>
-    <img *ngIf="character.image"
-         [alt]="character.name"
-         [src]="character.image"/>
-  </ng-template>
-}
+<button nz-button
+        (click)="userService.removeSession(); routerService.routeToLogin()">
+  Logout
+</button>

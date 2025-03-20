@@ -1,0 +1,11 @@
+<input #filterInput nz-input placeholder="Filter characters...">
+
+<!--
+*ngFor="let character of characters"
+<ng-container>
+-->
+@for (character of filteredCharacters; track character.id) {
+  <app-character-card appSelected
+                      [character]="character"
+                      (characterSelected)="selectedCharacter = $event"></app-character-card>
+}

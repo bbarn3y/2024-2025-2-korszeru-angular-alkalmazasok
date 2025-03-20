@@ -1,0 +1,16 @@
+<!-- character.image ? coverTemplate : undefined -->
+<nz-card style="width:300px;"
+         [nzActions]="[selectActionTemplate]"
+         [nzCover]="coverTemplate">
+  <nz-card-meta [nzTitle]="character.name"></nz-card-meta>
+</nz-card>
+
+<ng-template #coverTemplate>
+  <img *ngIf="character.image"
+       [alt]="character.name"
+       [src]="character.image"/>
+</ng-template>
+
+<ng-template #selectActionTemplate>
+  <span nz-icon nzType="select" (click)="characterSelected.emit(character)"></span>
+</ng-template>
