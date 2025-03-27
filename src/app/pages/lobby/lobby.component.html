@@ -1,6 +1,13 @@
+<nz-radio-group [(ngModel)]="language"
+                (ngModelChange)="translateService.use($event)"
+                nzButtonStyle="solid">
+  <label nz-radio-button nzValue="en">EN</label>
+  <label nz-radio-button nzValue="hu">HU</label>
+</nz-radio-group>
+
 <app-character-listing></app-character-listing>
 
 <button nz-button
         (click)="userService.removeSession(); routerService.routeToLogin()">
-  Logout
+  {{ 'LOBBY.LOGOUT' | translate }}
 </button>

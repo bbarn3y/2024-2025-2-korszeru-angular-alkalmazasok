@@ -7,5 +7,7 @@
 @for (character of filteredCharacters; track character.id) {
   <app-character-card appSelected
                       [character]="character"
+                      [color]="CharacterClassDetails[character.characterClass].color"
+                      [selected]="selectedCharacter?.id === character.id"
                       (characterSelected)="selectedCharacter = $event"></app-character-card>
 }

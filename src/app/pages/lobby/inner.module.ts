@@ -13,6 +13,11 @@ import {NzIconModule} from 'ng-zorro-antd/icon';
 import {IconDefinition} from '@ant-design/icons-angular';
 import {SelectOutline} from '@ant-design/icons-angular/icons';
 import {SelectedDirective} from '../../_directives/selected.directive';
+import {CharacterNamePipe} from '../../_pipes/character-name.pipe';
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {HttpClient} from '@angular/common/http';
+import {NzRadioModule} from 'ng-zorro-antd/radio';
 
 export const routes: Routes = [
   {
@@ -32,12 +37,17 @@ const zorroModules = [
   NzCardModule,
   NzIconModule.forChild(icons),
   NzInputModule,
+  NzRadioModule
 ];
+
+const httpLoaderFactory: (http: HttpClient) => TranslateHttpLoader = (http: HttpClient) =>
+  new TranslateHttpLoader(http, './assets/i18n/', '.json');
 
 @NgModule({
   declarations: [
     CharacterCardComponent,
     CharacterListingComponent,
+    CharacterNamePipe,
     LobbyComponent,
     SelectedDirective
   ],
@@ -47,6 +57,10 @@ const zorroModules = [
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes),
+    TranslateModule.forChild({
+      loader: {provide: TranslateLoader, useFactory: httpLoaderFactory, deps: [HttpClient]},
+      defaultLanguage: 'en'
+    })
   ],
   exports: [
 

@@ -4,12 +4,16 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import {provideAnimations} from '@angular/platform-browser/animations';
 import {provideHttpClient} from '@angular/common/http';
+import {provideTranslateService} from '@ngx-translate/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideAnimations(),
     provideHttpClient(),
-    provideRouter(routes)
+    provideRouter(routes),
+    provideTranslateService({
+      defaultLanguage: 'en'
+    })
   ]
 };

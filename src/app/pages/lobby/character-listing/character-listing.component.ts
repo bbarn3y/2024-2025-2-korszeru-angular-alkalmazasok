@@ -9,7 +9,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {debounceTime, fromEvent, map} from 'rxjs';
-import {Character, CharacterClass} from '../../../_models/character';
+import {Character, CharacterClass, CharacterClassDetails} from '../../../_models/character';
 
 @Component({
   selector: 'app-character-listing',
@@ -63,4 +63,5 @@ export class CharacterListingComponent implements OnChanges, OnInit, AfterViewIn
   }
 
 
+  protected readonly CharacterClassDetails = CharacterClassDetails;
 }
