@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import {debounceTime, fromEvent, map} from 'rxjs';
 import {Character, CharacterClass, CharacterClassDetails} from '../../../_models/character';
+import {CharacterService} from '@services/character.service';
 
 @Component({
   selector: 'app-character-listing',
@@ -21,16 +22,21 @@ export class CharacterListingComponent implements OnChanges, OnInit, AfterViewIn
 
   @ViewChild('filterInput', { static: true } ) filterInputEl!: ElementRef<HTMLInputElement>;
 
-  characters: Character[] = this.generateCharacters();
+  characters: Character[] = []; // this.generateCharacters();
   filteredCharacters: Character[] = [...this.characters];
   selectedCharacter?: Character;
+
+  constructor(private characterService: CharacterService) {
+  }
+
 
   ngOnChanges(changes: SimpleChanges) {
 
   }
 
   ngOnInit() {
-
+    this.characters = this.characterService.getCharacters();
+    this.filterCharacters(this.filterInputEl.nativeElement.value);
   }
 
   ngAfterViewInit() {

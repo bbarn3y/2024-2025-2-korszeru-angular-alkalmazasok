@@ -18,6 +18,11 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {HttpClient} from '@angular/common/http';
 import {NzRadioModule} from 'ng-zorro-antd/radio';
+import {CharacterCreatorComponent} from './character-creator/character-creator.component';
+import {NzFormModule} from 'ng-zorro-antd/form';
+import {NzSelectModule} from 'ng-zorro-antd/select';
+import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
+import {NzModalModule} from 'ng-zorro-antd/modal';
 
 export const routes: Routes = [
   {
@@ -35,9 +40,13 @@ const icons: IconDefinition[] = [ SelectOutline];
 const zorroModules = [
   NzButtonComponent,
   NzCardModule,
+  NzFormModule,
   NzIconModule.forChild(icons),
   NzInputModule,
-  NzRadioModule
+  NzInputNumberModule,
+  NzModalModule,
+  NzRadioModule,
+  NzSelectModule
 ];
 
 const httpLoaderFactory: (http: HttpClient) => TranslateHttpLoader = (http: HttpClient) =>
@@ -46,6 +55,7 @@ const httpLoaderFactory: (http: HttpClient) => TranslateHttpLoader = (http: Http
 @NgModule({
   declarations: [
     CharacterCardComponent,
+    CharacterCreatorComponent,
     CharacterListingComponent,
     CharacterNamePipe,
     LobbyComponent,

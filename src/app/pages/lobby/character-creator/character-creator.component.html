@@ -1,0 +1,83 @@
+<form nz-form class="login-form"
+      [formGroup]="characterForm"
+      (ngSubmit)="createCharacter()">
+  <nz-form-item>
+    <nz-form-label>Name</nz-form-label>
+    <nz-form-control [nzErrorTip]="nameErrorTemplate">
+      <nz-input-group>
+        <input type="text" nz-input formControlName="name" placeholder="Teszt Béla" />
+      </nz-input-group>
+    </nz-form-control>
+    <ng-template #nameErrorTemplate>
+      @if (characterForm.get('name')?.errors?.['required']) {
+        <span>
+          Please provide a name for the character!
+        </span>
+      }
+      @if (characterForm.get('name')?.errors?.['invalidWordCount']) {
+        <span>
+          The name must consist of at least two words!
+        </span>
+      }
+    </ng-template>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Image</nz-form-label>
+    <nz-form-control nzErrorTip="Please input an image path!">
+      <nz-input-group>
+        <input type="text" nz-input formControlName="image" placeholder="./assets/characters/mage.webp" />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Class</nz-form-label>
+    <nz-form-control>
+      <nz-select formControlName="characterClass">
+        @for (c of CharacterClass | keyvalue; track c.key) {
+          <nz-option [nzValue]="c.value" [nzLabel]="c.key"></nz-option>
+        }
+        <!--
+        <nz-option [nzValue]="CharacterClass.MAGE" [nzLabel]="CharacterClass.MAGE"></nz-option>
+        -->
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Max HP</nz-form-label>
+    <nz-form-control [nzErrorTip]="hpErrorTemplate"
+                     [nzValidateStatus]="((characterForm.get('hp')?.valid && !characterForm.errors?.['invalidMaxHpForClass'])) ? 'success' : 'error'"
+                     nzHasFeedback>
+      <nz-input-number formControlName="hp" />
+    </nz-form-control>
+
+    <ng-template #hpErrorTemplate>
+      @if (characterForm.get('hp')?.errors?.['required']) {
+        <span>
+          Please provide the maximum HP!
+        </span>
+      }
+      @if (characterForm.get('hp')?.errors?.['min']) {
+        <span>
+          The max HP must be at least 1!
+        </span>
+      }
+      @if (characterForm.get('hp')?.errors?.['max']) {
+        <span>
+          The max HP must be at most 10!
+        </span>
+      }
+      @if (characterForm.errors?.['invalidMaxHpForClass']) {
+        <span>
+          The max HP is incorrect for the selected class!
+        </span>
+      }
+    </ng-template>
+  </nz-form-item>
+
+  <button nz-button
+          [disabled]="!characterForm.valid"
+          [nzType]="'primary'">Create character</button>
+</form>
