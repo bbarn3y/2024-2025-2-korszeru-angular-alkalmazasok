@@ -23,15 +23,15 @@ export class CharacterService {
 
   removeCharacter(id: string): void {
     this.saveCharacters(
-      this.getCharacters().filter(c => c.id === id)
+      this.getCharacters().filter(c => c.id !== id)
     );
   }
 
-  updateCharacter(character: Character): void {
-    const characterToModify = this.getCharacters().find(c => c.id === character.id);
+  updateCharacter(id: string, character: Character): void {
+    const characterToModify = this.getCharacters().find(c => c.id === id);
     if (characterToModify) {
       this.saveCharacters(
-        this.getCharacters().map(c => c.id === character.id ? character : c)
+        this.getCharacters().map(c => c.id === id ? character : c)
       )
     }
   }

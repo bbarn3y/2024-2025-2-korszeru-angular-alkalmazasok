@@ -23,11 +23,17 @@ import {NzFormModule} from 'ng-zorro-antd/form';
 import {NzSelectModule} from 'ng-zorro-antd/select';
 import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
 import {NzModalModule} from 'ng-zorro-antd/modal';
+import {NzPopconfirmModule} from 'ng-zorro-antd/popconfirm';
+import {KonvaComponent} from './konva/konva.component';
 
 export const routes: Routes = [
   {
     path: '',
     component: LobbyComponent
+  },
+  {
+    path: 'konva',
+    component: KonvaComponent
   },
   {
     path: '**',
@@ -45,6 +51,7 @@ const zorroModules = [
   NzInputModule,
   NzInputNumberModule,
   NzModalModule,
+  NzPopconfirmModule,
   NzRadioModule,
   NzSelectModule
 ];
@@ -58,6 +65,7 @@ const httpLoaderFactory: (http: HttpClient) => TranslateHttpLoader = (http: Http
     CharacterCreatorComponent,
     CharacterListingComponent,
     CharacterNamePipe,
+    KonvaComponent,
     LobbyComponent,
     SelectedDirective
   ],

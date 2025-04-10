@@ -27,6 +27,10 @@ export class CharacterListingComponent implements OnChanges, OnInit, AfterViewIn
   selectedCharacter?: Character;
 
   constructor(private characterService: CharacterService) {
+    characterService.charactersChanged.subscribe((characters: Character[]) => {
+      this.characters = characters;
+      this.filterCharacters(this.filterInputEl.nativeElement.value);
+    });
   }
 
 

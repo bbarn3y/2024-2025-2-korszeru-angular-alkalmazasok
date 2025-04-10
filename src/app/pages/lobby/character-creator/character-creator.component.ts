@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {Character, CharacterClass} from '../../../_models/character';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CharacterService} from '@services/character.service';
 import {ValidatorService} from '@services/validator.service';
-import {NzModalRef} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-character-creator',
@@ -15,6 +15,8 @@ export class CharacterCreatorComponent {
 
   protected readonly CharacterClass = CharacterClass;
 
+  nzModalData: { character: Character } = inject(NZ_MODAL_DATA);
+
   characterForm: FormGroup;
 
   constructor(private characterService: CharacterService,
@@ -22,10 +24,10 @@ export class CharacterCreatorComponent {
               private nzModalRef: NzModalRef,
               private validatorService: ValidatorService) {
     this.characterForm = fb.group({
-      name: ['', [Validators.required, this.validatorService.twoWordsValidator ]],
-      image: ['', Validators.required],
-      characterClass: [CharacterClass.MAGE, Validators.required],
-      hp: [1, [Validators.required, Validators.min(1), Validators.max(10)]]
+      name: [this?.nzModalData?.character ? this.nzModalData.character.name : '', [Validators.required, this.validatorService.twoWordsValidator ]],
+      image: [this?.nzModalData?.character ? this.nzModalData.character.image : '', Validators.required],
+      characterClass: [this?.nzModalData?.character ? this.nzModalData.character.characterClass : CharacterClass.MAGE, Validators.required],
+      hp: [this?.nzModalData?.character ? this.nzModalData.character.maxHp : 1, [Validators.required, Validators.min(1), Validators.max(10)]]
     }, {
       updateOn: 'change',
       validators: [
@@ -34,7 +36,7 @@ export class CharacterCreatorComponent {
     });
   }
 
-  createCharacter() {
+  createOrEditCharacter() {
     if (this.characterForm.valid) {
       const character = new Character(
         this.characterForm.get('name')?.value,
@@ -42,7 +44,11 @@ export class CharacterCreatorComponent {
         this.characterForm.get('hp')?.value,
         this.characterForm.get('image')?.value,
       );
-      this.characterService.addCharacter(character);
+      if (this?.nzModalData?.character) {
+        this.characterService.updateCharacter(this.nzModalData.character.id, character);
+      } else {
+        this.characterService.addCharacter(character);
+      }
       this.nzModalRef.close();
     }
   }

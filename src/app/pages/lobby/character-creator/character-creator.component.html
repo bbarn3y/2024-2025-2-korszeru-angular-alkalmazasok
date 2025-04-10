@@ -1,6 +1,6 @@
 <form nz-form class="login-form"
       [formGroup]="characterForm"
-      (ngSubmit)="createCharacter()">
+      (ngSubmit)="createOrEditCharacter()">
   <nz-form-item>
     <nz-form-label>Name</nz-form-label>
     <nz-form-control [nzErrorTip]="nameErrorTemplate">
@@ -79,5 +79,11 @@
 
   <button nz-button
           [disabled]="!characterForm.valid"
-          [nzType]="'primary'">Create character</button>
+          [nzType]="'primary'">
+    @if (nzModalData?.character) {
+      Edit character
+    } @else {
+      Create character
+    }
+  </button>
 </form>

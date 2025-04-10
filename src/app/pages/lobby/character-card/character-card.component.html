@@ -1,6 +1,6 @@
 <!-- character.image ? coverTemplate : undefined -->
 <nz-card style="width:300px;"
-         [nzActions]="[selectActionTemplate]"
+         [nzActions]="[selectActionTemplate, editActionTemplate, removeActionTemplate]"
          [nzCover]="coverTemplate">
   <nz-card-meta [nzTitle]="titleTemplate"
                 [nzDescription]="descriptionTemplate"></nz-card-meta>
@@ -18,9 +18,23 @@
   </div>
 </ng-template>
 
+<ng-template #editActionTemplate>
+  <span nz-icon nzType="edit" (click)="editCharacter()"></span>
+</ng-template>
+
+<ng-template #removeActionTemplate>
+  <span nz-icon nzType="delete"
+        nz-popconfirm
+        nzPopconfirmTitle="Are you sure you wish to delete this character?"
+        nzOkText="Yes"
+        nzCancelText="No"
+        (nzOnConfirm)="characterService.removeCharacter(character.id)"></span>
+</ng-template>
+
 <ng-template #selectActionTemplate>
   <span nz-icon nzType="select" (click)="characterSelected.emit(character)"></span>
 </ng-template>
+
 
 <ng-template #titleTemplate>
   {{ character | characterName: ';' }}
