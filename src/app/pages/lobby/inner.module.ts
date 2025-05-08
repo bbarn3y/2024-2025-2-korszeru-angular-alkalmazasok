@@ -25,6 +25,7 @@ import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
 import {NzModalModule} from 'ng-zorro-antd/modal';
 import {NzPopconfirmModule} from 'ng-zorro-antd/popconfirm';
 import {KonvaComponent} from './konva/konva.component';
+import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
 
 export const routes: Routes = [
   {
@@ -46,6 +47,7 @@ const icons: IconDefinition[] = [ SelectOutline];
 const zorroModules = [
   NzButtonComponent,
   NzCardModule,
+  NzDropDownModule,
   NzFormModule,
   NzIconModule.forChild(icons),
   NzInputModule,

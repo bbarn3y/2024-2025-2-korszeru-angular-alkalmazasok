@@ -35,7 +35,7 @@ export class House {
       closed: true,
       fill: 'lightblue',
       stroke: 'black',
-      strokeWidth: 1
+      strokeWidth: 1,
     });
     const door = new Konva.Rect({
       x: this.x + this.width / 3,

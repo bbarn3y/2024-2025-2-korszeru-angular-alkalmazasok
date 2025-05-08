@@ -1,3 +1,26 @@
+<nz-card id="konva-toolbar">
+  <div class="toolbar-button-container">
+    <ng-template #toolbarButtonTemplate
+                 let-icon="buttonIcon"
+                 let-mode="mode">
+      <button nz-button
+              [nzType]="selectedMode === mode ? 'primary' : 'default'"
+              (click)="selectedMode = mode">
+        <span nz-icon [nzType]="icon"></span>
+      </button>
+    </ng-template>
+    <ng-container *ngTemplateOutlet="toolbarButtonTemplate; context: { buttonIcon: 'drag', mode: KonvaMode.DRAG }"></ng-container>
+    <ng-container *ngTemplateOutlet="toolbarButtonTemplate; context: { buttonIcon: 'select', mode: KonvaMode.SELECT }"></ng-container>
+    <ng-container *ngTemplateOutlet="toolbarButtonTemplate; context: { buttonIcon: 'home', mode: KonvaMode.HOUSE }"></ng-container>
+  </div>
+</nz-card>
 
+
+<nz-dropdown-menu #menu="nzDropdownMenu">
+  <ul nz-menu>
+    <li nz-menu-item (click)="deleteShape()">Delete</li>
+    <li nz-menu-item (click)="goToOrigo()">To origo</li>
+  </ul>
+</nz-dropdown-menu>
 
 <div id="konva-container"></div>
