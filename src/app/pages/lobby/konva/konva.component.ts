@@ -12,9 +12,11 @@ import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropd
   standalone: false
 })
 export class KonvaComponent implements AfterViewInit {
+  konvaScale = 1;
   leftClickedShape?: Konva.Node;
   rightClickedShape?: Konva.Node;
   selectedLayer?: Konva.Layer;
+  selectedLayerIndex?: number = 0;
   selectedMode: KonvaMode = KonvaMode.SELECT;
   stage?: Konva.Stage;
   transformer?: Konva.Transformer;
@@ -27,33 +29,7 @@ export class KonvaComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.stage = new Konva.Stage({
-      container: 'konva-container',
-      width: window.innerWidth,
-      height: window.innerHeight
-    });
-
-    const layer1 = new Konva.Layer();
-    const layer2 = new Konva.Layer();
-    this.stage.add(layer1, layer2);
-
-    this.selectedLayer = this.stage.getLayers()[0];
-
-    const rectangle = new Konva.Rect({
-      x: 100,
-      y: 150,
-      width: 200,
-      height: 100,
-      fill: 'rgba(133,200,300,0.4)',
-      stroke: 'black',
-      strokeWidth: 5,
-      draggable: false
-    });
-    const house = new House(
-      300, 200, 100, 100
-    )
-    house.draw(this.selectedLayer);
-    this.selectedLayer.add(rectangle);
+    this.loadState();
 
     console.log(this.stage);
 
@@ -81,12 +57,28 @@ export class KonvaComponent implements AfterViewInit {
     this.worker.postMessage('Test message');
     // this.worker.postMessage(new CreateWorkerEvent(10))
 
-    this.transformer = new Konva.Transformer();
-    this.selectedLayer.add(this.transformer);
     this.addListeners();
   }
 
   addListeners() {
+    document.addEventListener('keydown', (e) => {
+      e.preventDefault();
+      switch (e.code) {
+        case 'ArrowUp':
+          this.leftClickedShape?.y(this.leftClickedShape?.y() - 5);
+          break;
+        case 'ArrowDown':
+          this.leftClickedShape?.y(this.leftClickedShape?.y() + 5);
+          break;
+        case 'ArrowLeft':
+          this.leftClickedShape?.x(this.leftClickedShape?.x() - 5);
+          break;
+        case 'ArrowRight':
+          this.leftClickedShape?.x(this.leftClickedShape?.x() + 5);
+          break;
+      }
+    });
+
     this.stage?.on('click', (event) => {
       if (this.stage && this.selectedLayer) {
         const pointer = this.stage.getPointerPosition();
@@ -110,7 +102,10 @@ export class KonvaComponent implements AfterViewInit {
             case KonvaMode.HOUSE:
               if (pointer) {
                 const house = new House(
-                  pointer.x, pointer.y, 100, 100
+                  (pointer.x - this.stage.x()) / this.konvaScale,
+                  (pointer.y - this.stage.y()) / this.konvaScale,
+                  100,
+                  100
                 )
                 house.draw(this.selectedLayer);
               }
@@ -134,6 +129,42 @@ export class KonvaComponent implements AfterViewInit {
         }, this.contextMenuEl);
       }
     })
+
+    this.stage?.on('wheel', (event) => {
+      event.evt.preventDefault();
+      if (this.stage) {
+        let scaleBy = 1.03;
+        let oldScale = this.stage.scaleX();
+        let direction = event.evt.deltaY;
+        let pointer = this.stage.getPointerPosition();
+
+        if (pointer) {
+          let pointerScaledPosition = {
+            x: (pointer.x - this.stage.x()) / oldScale,
+            y: (pointer.y - this.stage.y()) / oldScale
+          }
+
+          this.konvaScale = direction < 0 ? oldScale * scaleBy : oldScale / scaleBy;
+
+          this.stage.position({
+            x: pointer.x - pointerScaledPosition.x * this.konvaScale,
+            y: pointer.y - pointerScaledPosition.y * this.konvaScale,
+          });
+          this.stage.scale({
+            x: this.konvaScale,
+            y: this.konvaScale
+          });
+        }
+      }
+    })
+  }
+
+  changeLayer(layerIndex: number) {
+    this.selectedLayer = this.stage?.getLayers()[layerIndex];
+    this.stage?.getLayers().forEach((layer, index) => {
+      layer.listening(layerIndex === index)
+    })
+    this.transformer?.nodes([]);
   }
 
   deleteShape() {
@@ -141,17 +172,36 @@ export class KonvaComponent implements AfterViewInit {
   }
 
   goToOrigo() {
-    // @todo Use absolute position
     // const localPosition = this.rightClickedShape?.getRelativePointerPosition();
-    const localPosition = this.rightClickedShape?.position()
+    //
+    // console.log('localPos', localPosition);
+    //
+    // if (localPosition) {
+    //   this.rightClickedShape?.to({
+    //     x: localPosition.x * -1,
+    //     y: localPosition.y * -1,
+    //     duration: 2
+    //   })
+    // }
 
-    console.log('localPos', localPosition);
+    if (!this.rightClickedShape) return;
+    this.rightClickedShape.to({
+      x: 0,
+      y: 0,
+      duration: 1
+    })
+  }
 
-    if (localPosition) {
-      this.rightClickedShape?.to({
-        x: localPosition.x * -1,
-        y: localPosition.y * -1,
-        duration: 2
+  makeItRed(shape?: Konva.Node) {
+    if (!shape) return;
+
+    if (shape instanceof Konva.Group) {
+      shape.children.forEach(this.makeItRed);
+    } else {
+      shape?.to({
+        fill: 'red',
+        duration: 2,
+        easing: Konva.Easings.EaseIn
       })
     }
   }
@@ -180,6 +230,52 @@ export class KonvaComponent implements AfterViewInit {
         shapeInLayer.setAttr(key, shape.attrs[key]);
         // (shapeInLayer as Konva.Shape).fill(shape.attrs['fill']);
       })
+    }
+  }
+
+  loadState() {
+    const savedState = localStorage.getItem('konvaState');
+    if (savedState) {
+      this.stage = Konva.Node.create(savedState, 'konva-container');
+      this.selectedLayer = this.stage?.children[0];
+    } else {
+      this.stage = new Konva.Stage({
+        container: 'konva-container',
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+
+      const layer1 = new Konva.Layer();
+      const layer2 = new Konva.Layer();
+      this.stage.add(layer1, layer2);
+
+      this.selectedLayer = this.stage.getLayers()[0];
+
+      const rectangle = new Konva.Rect({
+        x: 100,
+        y: 150,
+        width: 200,
+        height: 100,
+        fill: 'rgba(133,200,300,0.4)',
+        stroke: 'black',
+        strokeWidth: 5,
+        draggable: false
+      });
+      const house = new House(
+        300, 200, 100, 100
+      )
+      house.draw(this.selectedLayer);
+      this.selectedLayer.add(rectangle);
+    }
+
+    this.transformer = new Konva.Transformer();
+    this.selectedLayer?.add(this.transformer);
+  }
+
+  saveState() {
+    if (this.stage) {
+      const json = this.stage.toJSON();
+      localStorage.setItem('konvaState', json);
     }
   }
 

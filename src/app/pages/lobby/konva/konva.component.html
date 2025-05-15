@@ -1,5 +1,13 @@
 <nz-card id="konva-toolbar">
   <div class="toolbar-button-container">
+    <button nz-button (click)="saveState()">Save</button>
+
+    <nz-radio-group [(ngModel)]="selectedLayerIndex"
+                    (ngModelChange)="changeLayer($event)">
+      <label nz-radio-button [nzValue]="0">1</label>
+      <label nz-radio-button [nzValue]="1">2</label>
+    </nz-radio-group>
+
     <ng-template #toolbarButtonTemplate
                  let-icon="buttonIcon"
                  let-mode="mode">
@@ -20,6 +28,7 @@
   <ul nz-menu>
     <li nz-menu-item (click)="deleteShape()">Delete</li>
     <li nz-menu-item (click)="goToOrigo()">To origo</li>
+    <li nz-menu-item (click)="makeItRed(rightClickedShape)">Make it red</li>
   </ul>
 </nz-dropdown-menu>
 

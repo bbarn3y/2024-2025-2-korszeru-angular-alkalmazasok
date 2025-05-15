@@ -14,23 +14,33 @@ export class House {
   }
 
   draw(layer: Konva.Layer) {
-    layer.add(this.shape());
+    const shape = this.shape();
+    shape.on('mouseenter', () => {
+      document.body.style.cursor = 'pointer';
+    })
+    shape.on('mouseleave', () => {
+      document.body.style.cursor = 'default';
+    })
+    layer.add(shape);
   }
 
   shape(): Konva.Group {
-    const group = new Konva.Group({});
+    const group = new Konva.Group({
+      x: this.x,
+      y: this.y,
+    });
     const body = new Konva.Line({
       points: [
-        this.x,
-        this.y + this.height / 2,
-        this.x + this.width / 2,
-        this.y,
-        this.x + this.width,
-        this.y + this.height / 2,
-        this.x + this.width,
-        this.y + this.height,
-        this.x,
-        this.y + this.height
+        0,
+        this.height / 2,
+        this.width / 2,
+        0,
+        this.width,
+        this.height / 2,
+        this.width,
+        this.height,
+        0,
+        this.height
       ],
       closed: true,
       fill: 'lightblue',
@@ -38,8 +48,8 @@ export class House {
       strokeWidth: 1,
     });
     const door = new Konva.Rect({
-      x: this.x + this.width / 3,
-      y: this.y + this.height * 2 / 3,
+      x: this.width / 3,
+      y: this.height * 2 / 3,
       width: this.width / 3,
       height: this.height / 3,
       fill: 'brown',
